@@ -1,1 +1,1 @@
-# flappyBirdIA
+# goofy-bird
