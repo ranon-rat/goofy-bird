@@ -54,7 +54,7 @@ export class Brain {
         })
 
     }
-    public foward(input: number[]) {
+    public foward(input: number[]) :number[][]{
         let layers = [input]
         for (let l = 0; l < (this.biases).length; l++) {
             layers.push([])
@@ -70,8 +70,9 @@ export class Brain {
             layers[l + 1] = layers[l + 1].map(relu)
 
         }
+        return layers
     }
-    // the loss output is for the 
+    // the loss output is for the agent just keep it in mind
     public backprop(layers: number[][], loss: number[]):[number[][],number[][][]]{
         let bgrad: number[][] = []
         let wgrad: number[][][] = []
@@ -100,12 +101,11 @@ export class Brain {
     }
     public update(learningRate:number,bgrad:number[][],wgrad:number[][][]){
         bgrad.map((v,l)=>{
-            v.map((n,k)=>this.biases[l][k]-=learningRate*n)
-            wgrad[l].map((n,k)=>{
-                n.map((wd,c)=>{
-                    this.weights[l][k][c]-=learningRate*wd
-                })
-            })
+           this.biases[l]= v.map((n,k)=>this.biases[l][k]-learningRate*n)
+            this.weights[l]=wgrad[l].map((n,k)=>
+                n.map((wd,c)=>
+                    this.weights[l][k][c]-learningRate*wd
+                ))
         })
     }
 
