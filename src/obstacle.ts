@@ -1,15 +1,18 @@
 import { Game } from "./game.js";
 import { Bird } from "./bird.js"
+import { fps } from "./mathfuncs.js";
+import { Subject } from "./subject.js";
 export class Obstacle {
     freeSpaceY: number;
     freeSpaceHeight: number = 120;
     width: number;
     x: number;
     velX: number;
+    scoreToGive=1;
 
     up:HTMLImageElement=new Image();
     down:HTMLImageElement=new Image();
-    constructor(width: number, height: number, fps: number) {
+    constructor(width: number, height: number,) {
         this.x = width;
         this.freeSpaceY = (height / 3) + (height / 4) * Math.random()
         this.velX = 135 / fps
@@ -36,7 +39,14 @@ export class Obstacle {
 
     }
     public collide(bird: Bird): boolean {
-        return bird.x + bird.width > this.x && bird.x + bird.width < this.x + this.width &&
+        return bird.x + bird.width > this.x && bird.x  < this.x + this.width &&
         !(bird.y>this.freeSpaceY&& bird.y+bird.height<this.freeSpaceY+this.freeSpaceHeight)
+    }
+    public givePoints(subject:Subject){
+        let bird=subject.bird
+        if(!this.collide(bird)&& bird.x + bird.width > this.x && bird.x + bird.width < this.x + this.width){
+            subject.score+=this.scoreToGive
+            this.scoreToGive=0
+        }
     }
 }

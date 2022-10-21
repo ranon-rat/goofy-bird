@@ -1,5 +1,6 @@
-import { Brain } from "./brain"
-import { Game } from "./game"
+import { Brain } from "./brain.js"
+import { Game } from "./game.js"
+import {argmax} from  "./mathfuncs.js" 
 interface memory {
     state: number[];
     action: number
@@ -7,10 +8,8 @@ interface memory {
     nextState: number[]
     done: number[]
 }
-function argmax(array: number[]): number {
-    return array.map((x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
 
-}
+// i could finish this , so im going to be force to make something else bruh 
 class agent {
     totalGames: number = 0
     epsilon: number = 0
@@ -18,10 +17,11 @@ class agent {
     memory: memory[] = []
     model: Brain = new Brain([3, 5, 5, 2])
     getState(game: Game): number[] {
-        let distanceDownPlatform = game.bird.y - game.obstacle.freeSpaceY
-        let distanceUpPlatform = (game.obstacle.freeSpaceY + game.obstacle.freeSpaceHeight) - game.bird.y
-        let distanceRight = game.obstacle.x - game.bird.x
-        return [distanceDownPlatform, distanceUpPlatform, distanceRight]
+      //  let distanceDownPlatform = game.bird.y - game.obstacle.freeSpaceY
+      //  let distanceUpPlatform = (game.obstacle.freeSpaceY + game.obstacle.freeSpaceHeight) - game.bird.y
+      //  let distanceRight = game.obstacle.x - game.bird.x
+      //  return [distanceDownPlatform, distanceUpPlatform, distanceRight]
+      return []
     }
     remember(state: number[],
         action: number,
@@ -36,7 +36,8 @@ class agent {
         let newLayers = this.model.foward(v.nextState)
         let newPred = newLayers[newLayers.length - 1]
         let qnew = v.reward + this.gamma * (argmax(newPred))
-        let target = [0, 0]
+        let target =[]// acaso esto llega a causar algun efecto secundario?
+        pred.map((v,i)=>target.push(v))
         target[(v.action)] = qnew
 
         let loss = target.map((v, i) =>

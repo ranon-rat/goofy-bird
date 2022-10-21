@@ -1,4 +1,5 @@
 import { Game } from "./game";
+import { fps } from "./mathfuncs.js";
 
 export class Bird {
     velY: number = 0;
@@ -10,10 +11,10 @@ export class Bird {
     asset: number = 1;
     assets: HTMLImageElement[] = [new Image(), new Image(), new Image()];
 
-    constructor(height: number, width: number, fps: number) {
+    constructor(height: number, width: number) {
         this.y = height / 2
         this.gravity = 300 / fps
-        this.x = width / 4
+        this.x = (width / 4)+Math.random()/2
         this.assets.map((v, i) => {
             v.src = `assets/yellowbird-${i}.png`
         })
