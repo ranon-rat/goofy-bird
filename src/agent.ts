@@ -9,7 +9,7 @@ interface memory {
     done: number[]
 }
 
-// i could finish this , so im going to be force to make something else bruh 
+// i couldnt finished this , so im going to be forced to make something else bruh 
 class agent {
     totalGames: number = 0
     epsilon: number = 0
