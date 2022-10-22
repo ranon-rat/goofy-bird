@@ -12,15 +12,13 @@ const sigmoid = (x: number): number =>
 
 const devSigmoid = (x: number): number => x * (1 - x)
 
-export const fps = 15
+export const fps =30
 export function gaussianRand() {
     var rand = 0;
-
-    for (var i = 0; i < 8; i += 1) {
-        rand += (Math.random() - 0.5);
+    for (var i = 0; i < 20; i ++) {
+        rand += (Math.random() );
     }
-
-    return rand / 8;
+    return rand / 20;
 }
 
 export function mathFuncs(x: number, name: string, dev: boolean):number {

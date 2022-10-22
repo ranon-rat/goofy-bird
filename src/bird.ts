@@ -6,6 +6,7 @@ export class Bird {
     y: number;
     x: number = 0;
     gravity: number;
+    jumpVel:number;
     width = 30;
     height = 30;
     asset: number = 0;
@@ -13,8 +14,9 @@ export class Bird {
 
     constructor(height: number, width: number) {
         this.y = height / 2
-        this.gravity = 300 / fps
-        this.x = (width / 4)+Math.random()/2
+        this.gravity = 30 / fps
+        this.jumpVel=360/fps
+        this.x = (width / 4)
         this.assets.map((v, i) => {
             v.src = `assets/yellowbird-${i}.png`
         })
@@ -26,13 +28,13 @@ export class Bird {
 
     }
     public jump() {
-        this.velY = 10;
+        this.velY = this.jumpVel;
     }
     public move() {
         this.asset++
         this.asset%=3
-        if (this.velY > -15) {
-            this.velY--
+        if (this.velY > -this.jumpVel) {
+            this.velY-=this.gravity
         }
         this.y += this.velY
     }

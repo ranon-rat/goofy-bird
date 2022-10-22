@@ -40,8 +40,6 @@ export class Subject {
         }
         this.bird.move()
         this.bird.show(g)
-
-        g.obstacle.givePoints(this)
         this.death = g.obstacle.collide(this.bird) 
        
     }

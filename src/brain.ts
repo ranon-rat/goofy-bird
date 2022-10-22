@@ -116,7 +116,7 @@ export class Brain {
 
 }
 function randomValue(x: number) {
-    if (Math.random() < 0.2) {
+    if (Math.random() < 0.1) {
         return Math.random() - 0.5
     }
     

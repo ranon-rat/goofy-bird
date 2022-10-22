@@ -19,7 +19,7 @@ export class Game {
         this.height = this.background.height
 
         this.obstacle = new Obstacle(this.width, this.height)
-        this.population = new Population(15, this.height, this.width)
+        this.population = new Population(25, this.height, this.width)
         this.background.addEventListener("load",(_)=>this.loaded=true)
 
 
@@ -36,7 +36,6 @@ export class Game {
         this.obstacle.show( this)
         this.population.doSomething( this)
 
-        document.getElementById("score")!.innerText = this.population.bestScore + "";
 
         if (this.obstacle.x + this.obstacle.width <= 0) {
             this.obstacle = new Obstacle(this.width, this.height)

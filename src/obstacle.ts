@@ -15,7 +15,7 @@ export class Obstacle {
     constructor(width: number, height: number,) {
         this.x = width;
         this.freeSpaceY = (height / 3) + (height / 4) * Math.random()
-        this.velX = 135 / fps
+        this.velX = 200 / fps
      
         this.up.src="assets/pipe-green-up.png"
         this.down.src="assets/pipe-green-down.png" 
@@ -42,11 +42,12 @@ export class Obstacle {
         return bird.x + bird.width > this.x && bird.x  < this.x + this.width &&
         !(bird.y>this.freeSpaceY&& bird.y+bird.height<this.freeSpaceY+this.freeSpaceHeight)
     }
-    public givePoints(subject:Subject){
+    public givePoints(subject:Subject):number{
         let bird=subject.bird
-        if(!this.collide(bird)&& bird.x + bird.width > this.x && bird.x + bird.width < this.x + this.width){
-            subject.score+=this.scoreToGive
-            this.scoreToGive=0
+        if(!this.collide(bird)&& bird.x + bird.width > this.x && bird.x + bird.width < this.x + this.width && this.scoreToGive!=0){
+            this.scoreToGive--
+            return 1
         }
+        return 0
     }
 }
