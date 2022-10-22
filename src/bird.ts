@@ -14,8 +14,8 @@ export class Bird {
 
     constructor(height: number, width: number) {
         this.y = height / 2
-        this.gravity = 30 / fps
-        this.jumpVel=360/fps
+        this.gravity = 25 / fps
+        this.jumpVel=300/fps
         this.x = (width / 4)
         this.assets.map((v, i) => {
             v.src = `assets/yellowbird-${i}.png`
