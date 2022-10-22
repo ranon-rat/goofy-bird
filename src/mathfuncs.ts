@@ -1,24 +1,34 @@
+
 export function argmax(array: number[]): number {
     return array.map((x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
+}
+const relu = (x: number): number =>
+    Math.max(x, 0)
 
-}
-export function relu(x: number): number {
-    return Math.max(x,0)
-}
-export function devRelu(x: number): number {
-    return Math.max(1, 0)
-}
-export function sigmoid(x:number):number{
-    return 1/(1+Math.exp(-x))
-}
-export const fps=15
+const devRelu = (x: number): number => Math.max(1, 0)
+
+const sigmoid = (x: number): number =>
+    1 / (1 + Math.exp(-x))
+
+const devSigmoid = (x: number): number => x * (1 - x)
+
+export const fps = 15
 export function gaussianRand() {
     var rand = 0;
-  
+
     for (var i = 0; i < 8; i += 1) {
-      rand += (Math.random()-0.5);
+        rand += (Math.random() - 0.5);
     }
-  
+
     return rand / 8;
-  }
-  
+}
+
+export function mathFuncs(x: number, name: string, dev: boolean):number {
+    switch (name) {
+        case "sigmoid":
+            return dev ? devSigmoid(x) : sigmoid(x);
+        case "relu":
+            return dev ? devRelu(x) : relu(x);
+    }
+    return x
+}

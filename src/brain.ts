@@ -26,13 +26,14 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠈⠻⢦⡀⠀⣰⠏⠀⠀⢀⡴⠃⢀⡄⠙⣆⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡾⢷⡄⠀⠀⠀⠀⠉⠙⠯⠀⠀⡴⠋⠀⢠⠟⠀⠀⢹⡄
  */
-import {relu,devRelu,sigmoid, gaussianRand} from "./mathfuncs.js"
+import {mathFuncs, gaussianRand} from "./mathfuncs.js"
 export class Brain {
     weights: number[][][] = []
     biases: number[][] = []
     activationFunctions: string[] = []
-    constructor(layers: number[]) {
+    constructor(layers: number[],activationFuncs:string[]) {
         layers.slice(0,layers.length-1).map((v, i) => {
+            this.activationFunctions=activationFuncs
             this.weights.push([])
             this.biases.push([])
             for (let n = 0; n < v; n++) {
@@ -65,7 +66,7 @@ export class Brain {
             }
 
             // this proyect is made
-            layers.push(layer.map(sigmoid))
+            layers.push(layer.map(x=>mathFuncs(x,this.activationFunctions[l],false)))
         }
         return layers
     }
@@ -79,7 +80,7 @@ export class Brain {
         let wgrad: number[][][] = []
         for (let l = this.biases.length - 1; l > 0; l--) {
             let gradient: number[] = this.biases[l].map((_, n) =>
-                loss[n] * devRelu(layers[l + 1][n])
+                loss[n] * mathFuncs(layers[l + 1][n],this.activationFunctions[l],true)
             )
             let deltGrad: number[][] = this.weights[l].map((v, i) =>
                 gradient.map((g) => layers[l][i] * g)

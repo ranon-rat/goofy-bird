@@ -15,7 +15,7 @@ class agent {
     epsilon: number = 0
     gamma: number = 0.9
     memory: memory[] = []
-    model: Brain = new Brain([3, 5, 5, 2])
+    model: Brain = new Brain([3, 5, 5, 2],["relu","relu","relu"])
     getState(game: Game): number[] {
       //  let distanceDownPlatform = game.bird.y - game.obstacle.freeSpaceY
       //  let distanceUpPlatform = (game.obstacle.freeSpaceY + game.obstacle.freeSpaceHeight) - game.bird.y

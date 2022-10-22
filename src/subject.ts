@@ -3,7 +3,7 @@ import { Brain } from "./brain.js";
 import { Game } from "./game.js";
 import { argmax } from "./mathfuncs.js";
 export class Subject {
-    brain: Brain = new Brain([3, 4, 2]);
+    brain: Brain = new Brain([3, 4, 2],["sigmoid","sigmoid"]);
     bird: Bird;
     death: boolean = false;
     width: number

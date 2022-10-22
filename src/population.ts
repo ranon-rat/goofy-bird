@@ -7,7 +7,7 @@ import { Subject } from "./subject.js";
 export class Population {
     subjects: Subject[] = [];
     bestScore = 0
-    bestBrain: Brain = new Brain([3, 4, 2]);
+    bestBrain: Brain = new Brain([3, 4, 2],["sigmoid","sigmoid"]);
     constructor(populationSize: number, height: number, width: number) {
         for (let i = 0; i < populationSize; i++) {
             this.subjects.push(new Subject(height, width))
