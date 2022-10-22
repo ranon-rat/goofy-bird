@@ -8,7 +8,7 @@ export class Bird {
     gravity: number;
     width = 30;
     height = 30;
-    asset: number = 1;
+    asset: number = 0;
     assets: HTMLImageElement[] = [new Image(), new Image(), new Image()];
 
     constructor(height: number, width: number) {
@@ -30,14 +30,14 @@ export class Bird {
     }
     public move() {
         this.asset++
-        this.assets%=3
+        this.asset%=3
         if (this.velY > -15) {
             this.velY--
         }
         this.y += this.velY
     }
     public show(game: Game) {
-        game.ctx.drawImage(this.assets[this.asset % 3], this.x, this.y)
+        game.ctx.drawImage(this.assets[this.asset ], this.x, this.y)
 
     }
 
