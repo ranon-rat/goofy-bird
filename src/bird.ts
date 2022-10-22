@@ -30,6 +30,7 @@ export class Bird {
     }
     public move() {
         this.asset++
+        this.assets%=3
         if (this.velY > -15) {
             this.velY--
         }
