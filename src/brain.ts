@@ -118,7 +118,7 @@ export class Brain {
 function randomValue(x: number) {
     if (Math.random() < 0.1) {
         return Math.random()
-    }else if (Math.random()<0.3){
+    }else if (Math.random()<0.5){
         return x+gaussianRand()
     }
     

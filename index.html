@@ -9,29 +9,46 @@
 </head>
 
 <body>
-    <h1>
-       best  score:<span id="best-score">0</span>
+    <h1 id="title">
+        Goofy Bird
     </h1>
-    <h1>
-        score: <span id="score">0</span>
-    </h1>
-    <h1>
-        generation: <span id="generation">1</span>
-    </h1>
-    <h1>
-        survivors: <span id="survivors">1</span>
-    </h1>
-    <canvas id="goofy-bird"></canvas>
+        <canvas id="goofy-bird" width="288" height="512"></canvas>
+
+        <div id="stats">
+            <h1>
+                best score:<span id="best-score">0</span>
+            <hr>
+                score: <span id="score">0</span>
+            <hr>
+                generation: <span id="generation">1</span>
+            
+            <hr>
+                survivors: <span id="survivors">1</span>
+            </h1>
+        </div>
 
     <style>
+        body {
+            background-color: rgb(0, 41, 40);
+            color: white;
+            font-family: sans-serif;
+        }
+
+        #stats {
+
+            float:inline-start;
+        }
+
         #goofy-bird {
+
+  
+
             transform: scaleX(-1) rotate(180deg);
             filter: FlipH;
             -ms-filter: "FlipH";
             float: none;
-        color:blue;
+            color: blue;
         }
-        
     </style>
     <script type="module" src="script/main.js"></script>
 </body>
