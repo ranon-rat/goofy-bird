@@ -1,7 +1,6 @@
 import { Game } from "./game.js";
 import { Bird } from "./bird.js"
 import { fps } from "./mathfuncs.js";
-import { Subject } from "./subject.js";
 export class Obstacle {
     freeSpaceY: number;
     freeSpaceHeight: number = 120;
@@ -42,11 +41,10 @@ export class Obstacle {
         return bird.x + bird.width > this.x && bird.x  < this.x + this.width &&
         !(bird.y>this.freeSpaceY&& bird.y+bird.height<this.freeSpaceY+this.freeSpaceHeight)
     }
-    public givePoints(subject:Subject):number{
-        let bird=subject.bird
+    public givePoints(bird:Bird):number{
         if(!this.collide(bird)&& bird.x + bird.width > this.x && bird.x + bird.width < this.x + this.width && this.scoreToGive!=0){
             this.scoreToGive--
-            return 1
+            return 10
         }
         return 0
     }

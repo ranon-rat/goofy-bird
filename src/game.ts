@@ -1,4 +1,5 @@
 //@ts-ignore 
+import { Agent } from "./agent.js";
 import { Obstacle } from "./obstacle.js";
 import { Population } from "./population.js";
 
@@ -7,9 +8,10 @@ export class Game {
     width: number
     height: number
     obstacle: Obstacle;
-    population: Population
+   // population: Population
     background: HTMLImageElement;
     loaded:boolean=false;
+    agent:Agent=new Agent()
     constructor(c: CanvasRenderingContext2D) {
         this.ctx = c
         this.background = new Image()
@@ -19,7 +21,7 @@ export class Game {
         this.height = this.background.height
 
         this.obstacle = new Obstacle(this.width, this.height)
-        this.population = new Population(25, this.height, this.width)
+     //   this.population = new Population(25, this.height, this.width)
         this.background.addEventListener("load",(_)=>this.loaded=true)
 
 
@@ -30,11 +32,12 @@ export class Game {
     public show() {
 
         this.ctx.drawImage(this.background, 0, 0)
-
         this.obstacle.move()
-
         this.obstacle.show( this)
-        this.population.doSomething( this)
+
+        this.agent.doSomething(this)
+
+        // this.population.doSomething( this)
 
 
         if (this.obstacle.x + this.obstacle.width <= 0) {

@@ -78,7 +78,7 @@ export class Brain {
     public backprop(layers: number[][], loss: number[]): [number[][], number[][][]] {
         let bgrad: number[][] = []
         let wgrad: number[][][] = []
-        for (let l = this.biases.length - 1; l > 0; l--) {
+        for (let l = this.biases.length - 1; l >= 0; l--) {
             let gradient: number[] = this.biases[l].map((_, n) =>
                 loss[n] * mathFuncs(layers[l + 1][n],this.activationFunctions[l],true)
             )
@@ -95,6 +95,7 @@ export class Brain {
                 return s
             })
         }
+    
         return [bgrad.reverse(), wgrad.reverse()]
     }
     public mutate(bestBias: number[][], bestWeight: number[][][]) {

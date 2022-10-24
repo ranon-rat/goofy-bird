@@ -29,7 +29,7 @@ export class Population {
             if (this.subjects[i].score > s) {
                 s = this.subjects[i].score
             }
-            s += g.obstacle.givePoints(this.subjects[i])
+            s += g.obstacle.givePoints(this.subjects[i].bird)
             this.subjects[i].score = s
 
         }
