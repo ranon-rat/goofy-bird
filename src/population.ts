@@ -9,6 +9,8 @@ export class Population {
     bestScore = 0
     bestBrain: Brain = new Brain([3, 4, 2], ["sigmoid", "sigmoid"]);
     generation: number = 1
+
+    bestScoreToShow:number=0
     constructor(populationSize: number, height: number, width: number) {
         for (let i = 0; i < populationSize; i++) {
             this.subjects.push(new Subject(height, width))
@@ -31,7 +33,7 @@ export class Population {
             this.subjects[i].score = s
 
         }
-        document.getElementById("score")!.innerText = s + ""
+        document.getElementById("score")!.innerText = s+ ""
         document.getElementById("survivors")!.innerText = (this.subjects.length - howManyDeath) + ""
 
         if (howManyDeath == this.subjects.length) {
@@ -42,8 +44,8 @@ export class Population {
             let index = argmax(this.subjects.map((i) => i.score))
             let score = this.subjects[index].score
             if (score >= this.bestScore) {
-                this.bestBrain.biases = this.subjects[index].brain.biases.map(l => l.map(k => k))
-                this.bestBrain.weights = this.subjects[index].brain.weights.map(l => l.map(n => n.map(c => c)))
+                this.bestBrain.biases = this.subjects[index].brain.biases.map(l => l.slice())
+                this.bestBrain.weights = this.subjects[index].brain.weights.map(l => l.map(n => n.slice()))
 
                 this.bestScore = score
 

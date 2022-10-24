@@ -29,7 +29,6 @@ export class Subject {
         if (this.death) {
             return
         }
-     
     
         let state = this.getState(g)
         let output = this.brain.predict(state)

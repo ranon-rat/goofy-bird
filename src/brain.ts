@@ -39,13 +39,13 @@ export class Brain {
             for (let n = 0; n < v; n++) {
                 this.weights[i].push( [])
                 for (let c = 0; c < layers[i + 1]; c++) {
-                    this.weights[i][n].push(Math.random() - 0.5)
+                    this.weights[i][n].push(Math.random() )
                     
                 }
             
             }
             for (let n = 0; n < layers[i + 1]; n++) {
-                this.biases[i].push(Math.random() - 0.5)
+                this.biases[i].push(Math.random() )
             }
 
         })
@@ -116,9 +116,11 @@ export class Brain {
 
 }
 function randomValue(x: number) {
-    if (Math.random() < 0.15) {
-        return Math.random() - 0.5
+    if (Math.random() < 0.1) {
+        return Math.random()
+    }else if (Math.random()<0.3){
+        return x+gaussianRand()
     }
     
-    return x +gaussianRand()
+    return x 
 }

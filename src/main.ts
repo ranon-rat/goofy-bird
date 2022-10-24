@@ -7,4 +7,5 @@ const game=new Game(ctx)
 canvas.width=game.width
 canvas.height=game.height
 //requestAnimationFrame  (game.show.bind(game))
-setInterval(()=>requestAnimationFrame  (game.show.bind(game)),1000/fps)
+setTimeout(()=>
+setInterval(()=>requestAnimationFrame  (game.show.bind(game)),1000/fps),1000)
