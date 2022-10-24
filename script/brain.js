@@ -101,8 +101,5 @@ function randomValue(x) {
     if (Math.random() < 0.1) {
         return Math.random();
     }
-    else if (Math.random() < 0.5) {
-        return x + gaussianRand();
-    }
-    return x;
+    return x + gaussianRand();
 }
