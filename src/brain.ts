@@ -39,13 +39,13 @@ export class Brain {
             for (let n = 0; n < v; n++) {
                 this.weights[i].push( [])
                 for (let c = 0; c < layers[i + 1]; c++) {
-                    this.weights[i][n].push(Math.random() )
+                    this.weights[i][n].push(Math.random()-0.5 )
                     
                 }
             
             }
             for (let n = 0; n < layers[i + 1]; n++) {
-                this.biases[i].push(Math.random() )
+                this.biases[i].push(Math.random()-0.5 )
             }
 
         })
@@ -88,7 +88,7 @@ export class Brain {
 
             bgrad.push(gradient)
             wgrad.push(deltGrad)
-            if (l == 0) continue
+      
             loss = layers[l].map((_, i) => {
                 let s = 0
                 loss.map((q, j) => { s += q * this.weights[l][i][j] })
@@ -107,10 +107,10 @@ export class Brain {
     }
     public update(learningRate: number, bgrad: number[][], wgrad: number[][][]) {
         bgrad.map((v, l) => {
-            this.biases[l] = v.map((n, k) => this.biases[l][k] - learningRate * n)
-            this.weights[l] = wgrad[l].map((n, k) =>
+            v.map((n, k) => this.biases[l][k]-=  learningRate * n)
+           wgrad[l].map((n, k) =>
                 n.map((wd, c) =>
-                    this.weights[l][k][c] - learningRate * wd
+                    this.weights[l][k][c] -= learningRate * wd
                 ))
         })
     }
