@@ -37,7 +37,6 @@ export class Population {
         document.getElementById("survivors")!.innerText = (this.subjects.length - howManyDeath) + ""
 
         if (howManyDeath == this.subjects.length) {
-            document.getElementById("best-score")!.innerText = this.bestScore + ""
             this.generation++
             document.getElementById("generation")!.innerText = this.generation + ""
 
@@ -49,7 +48,10 @@ export class Population {
 
                 this.bestScore = score
 
+
             }
+                        document.getElementById("best-score")!.innerText = this.bestScore + ""
+
             this.subjects.map((s) => s.mutate(this.bestBrain))
 
             g.obstacle = new Obstacle(g.width, g.height)
