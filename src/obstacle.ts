@@ -42,7 +42,7 @@ export class Obstacle {
         !(bird.y>=this.freeSpaceY&& bird.y+bird.height<=this.freeSpaceY+this.freeSpaceHeight)
     }
     public givePoints(bird:Bird):number{
-        if(!this.collide(bird)&& bird.x + bird.width > this.x && bird.x + bird.width < this.x + this.width && this.scoreToGive!=0){
+        if(!this.collide(bird)&&bird.x+bird.width > this.x && bird.x<this.x+this.width&& this.scoreToGive!=0 ){
             this.scoreToGive--
             return 1
         }

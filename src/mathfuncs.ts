@@ -2,10 +2,8 @@
 export function argmax(array: number[]): number {
     return array.map((x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
 }
-const relu = (x: number): number =>
-    Math.max(x, 0)
-
-const devRelu = (x: number): number => Math.max(1, 0)
+const relu = (x: number): number =>Math.max(0,x)
+const devRelu = (x: number): number => Number( x>0)
 
 const sigmoid = (x: number): number =>
     1 / (1 + Math.exp(-x))

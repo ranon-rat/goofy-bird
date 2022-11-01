@@ -1,6 +1,6 @@
 import { Brain } from "./brain.js"
 import { Game } from "./game.js"
-import { argmax } from "./mathfuncs.js"
+import { argmax, fps, gaussianRand } from "./mathfuncs.js"
 interface memory {
     state: number[];
     action: number
@@ -21,101 +21,101 @@ function shuffle(arr: memory[]): memory[] {
 // i couldnt finished this , so im going to be forced to make something else bruh 
 export class Agent {
     totalGames: number = 0
-    epsilon: number = 0
+    epsilon: number = 80
     gamma: number = 0.9
     memory: memory[] = []
-    model: Brain = new Brain([3, 4, 2], ["sigmoid", "relu"])
+    model: Brain = new Brain([4, 4, 2], ["sigmoid", "sigmoid"])
+    shortMemory: memory[] = []
     getState(g: Game): number[] {
-        let distanceDownPlatform = g.bird.y - g.obstacle.freeSpaceY
-        let distanceUpPlatform = (g.obstacle.freeSpaceY + g.obstacle.freeSpaceHeight) - (g.bird.y + g.bird.height)
-        let distanceRight = g.obstacle.x - (g.bird.x + g.bird.width)
-
-        return [distanceDownPlatform / (g.height + 1), distanceUpPlatform / (g.height + 1), distanceRight / (g.width + 1)]
+        let distanceDownPlatform = (g.bird.y - g.obstacle.freeSpaceY) / g.height
+        let distanceUpPlatform = ((g.obstacle.freeSpaceY + g.obstacle.freeSpaceHeight) - (g.bird.y + g.bird.height)) / g.height
+        let distanceRight = (g.obstacle.x - (g.bird.x + g.bird.width)) / g.width
+        return [(distanceDownPlatform), (distanceUpPlatform), distanceRight, g.bird.velY / g.bird.jumpVel]
     }
-    remember(m: memory) {
-        if (typeof m == 'undefined') return;
+    remember() {
 
-        this.memory.push(m)
-        if (this.memory.length > 5000000) {
-            this.memory = shuffle(this.memory)
-            this.memory.shift()
+        this.memory.concat(this.shortMemory)
+        this.memory = shuffle(this.shortMemory)
+
+        if (this.memory.length > 50000) {
+            this.memory=   this.memory.slice(0, 49999)
         }
     }
-    trainStep(m: memory, lr: number) {
 
-        if (typeof m == 'undefined') return;
+    trainStep(m:memory,lr:number){
+        let [bd,wd]=            this.backAndLoss(m)
+        this.model.update(lr / this.shortMemory.length, bd, wd)
+
+    }
+    backAndLoss(m: memory): [number[][], number[][][]] {
         let layers = this.model.foward(m.state)
-        let pred = layers[layers.length - 1]
+        let pred = layers[layers.length - 1].slice()
         let newPred = this.model.predict(m.nextState)
+        let target = layers[layers.length - 1].slice()// acaso esto llega a causar algun efecto secundario?
         let qnew = m.reward
         if (!m.done) {
             qnew = m.reward + this.gamma * (argmax(newPred))
         }
-        let target = pred.slice()// acaso esto llega a causar algun efecto secundario?
         target[m.action] = qnew
-
 
         let loss = target.map((v, i) =>
             (pred[i] - v) ** 2
         )
-        let [bd, wd] = this.model.backprop(layers, loss)
-        this.model.update(lr, bd, wd)
+        return this.model.backprop(layers, loss)
     }
 
-    longMemoryTrain(learningRate: number) {
-        let minisample = this.memory
-        if (minisample.length > 500) {
-            minisample = shuffle(this.memory).slice(0, 500)
+    longMemoryTrain(lr: number) {
+        let minisample = shuffle(this.memory)
 
-        }
-        minisample.map((v) => this.trainStep(v, learningRate))
+        minisample.map((m) => this.backAndLoss(m)).map(i =>
+
+            this.model.update(lr / minisample.length, i[0], i[1]))
     }
     getAction(state: number[]) {
-        this.epsilon = 80 - this.totalGames
         if (Math.random() * 100 < this.epsilon) {
-            return Math.floor(Math.random() * 2)
+            return Math.floor(gaussianRand() * 2)
         }
         let pred = this.model.predict(state)
-        console.log(pred)
         return argmax(pred)
     }
     doSomething(g: Game) {
         let state = this.getState(g)
         let action = this.getAction(state)
         if (action == 1) {
+
             g.bird.jump()
         }
-
-        let done = g.obstacle.collide(g.bird) 
-        let reward = done ? -1 : g.obstacle.givePoints(g.bird)
-
+        g.obstacle.move()
         g.bird.move()
-        let nexState = this.getState(g)
+        let done = g.obstacle.collide(g.bird)
 
-        this.remember({
+        let reward = done ? -10 : (g.obstacle.givePoints(g.bird)) * 10
+
+        let nexState = this.getState(g)
+        let m = {
             state: state,
             action: action,
             reward: reward,
             nextState: nexState,
-            done: done 
-        })
+            done: done
+        }
 
-        this.trainStep(
-            {
-                state: state,
-                action: action,
-                reward: reward,
-                nextState: nexState,
-                done: done 
-            }, 0.01
-        )
+        this.shortMemory.push(m)
+    
+        if (reward != 5 || this.shortMemory.length > 2 * fps) {
+            this.shortMemory.map((v, i) => (v.reward = reward * ((this.shortMemory.length - i) ** (-1))))
+            this.remember()
+            this.shortMemory = []
+        }
 
         if (g.obstacle.collide(g.bird)) {
-
             g.restart()
-
-            this.longMemoryTrain(0.01/this.memory.length)
+                this.longMemoryTrain(0.7)
+            
             this.totalGames++
+            this.epsilon--
+            document.getElementById("epoch")!.innerText = this.totalGames + ""
+
         }
     }
 }

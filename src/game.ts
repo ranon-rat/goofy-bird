@@ -2,7 +2,6 @@
 import { Agent } from "./agent.js";
 import { Bird } from "./bird.js";
 import { Obstacle } from "./obstacle.js";
-import { Population } from "./population.js";
 
 export class Game {
     ctx: CanvasRenderingContext2D;
@@ -35,12 +34,11 @@ export class Game {
     public show() {
 
         this.ctx.drawImage(this.background, 0, 0)
+    
+    
         this.agent.doSomething(this)
-        this.bird.show(this)
-        this.obstacle.move()
         this.obstacle.show( this)
-        
-
+        this.bird.show(this)    
         // this.population.doSomething( this)
 
 
@@ -51,6 +49,7 @@ export class Game {
 
 
     }
+
     public restart(){
         this.obstacle = new Obstacle(this.width, this.height)
         this.bird=new Bird(this.height,this.width)
