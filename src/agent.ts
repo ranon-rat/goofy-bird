@@ -110,7 +110,7 @@ export class Agent {
 
         if (g.obstacle.collide(g.bird)) {
             g.restart()
-            this.longMemoryTrain(0.1)
+            this.longMemoryTrain(0.01)
 
             this.totalGames++
             this.epsilon--
