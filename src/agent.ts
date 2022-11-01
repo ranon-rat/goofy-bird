@@ -38,12 +38,12 @@ export class Agent {
         this.memory = shuffle(this.shortMemory)
 
         if (this.memory.length > 50000) {
-            this.memory=   this.memory.slice(0, 49999)
+            this.memory = this.memory.slice(0, 49999)
         }
     }
 
-    trainStep(m:memory,lr:number){
-        let [bd,wd]=            this.backAndLoss(m)
+    trainStep(m: memory, lr: number) {
+        let [bd, wd] = this.backAndLoss(m)
         this.model.update(lr / this.shortMemory.length, bd, wd)
 
     }
@@ -101,7 +101,7 @@ export class Agent {
         }
 
         this.shortMemory.push(m)
-    
+
         if (reward != 5 || this.shortMemory.length > 2 * fps) {
             this.shortMemory.map((v, i) => (v.reward = reward * ((this.shortMemory.length - i) ** (-1))))
             this.remember()
@@ -110,8 +110,8 @@ export class Agent {
 
         if (g.obstacle.collide(g.bird)) {
             g.restart()
-                this.longMemoryTrain(0.7)
-            
+            this.longMemoryTrain(0.1)
+
             this.totalGames++
             this.epsilon--
             document.getElementById("epoch")!.innerText = this.totalGames + ""
