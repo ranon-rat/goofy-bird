@@ -12,21 +12,21 @@
     <h1 id="title">
         Goofy Bird
     </h1>
-        <canvas id="goofy-bird" width="288" height="512"></canvas>
+    <canvas id="goofy-bird" width="288" height="512"></canvas>
 
-        <div id="stats">
-            <h1>
-                epoch:<span id="epoch">0</span>
+    <div id="stats">
+        <h1>
+            total games:<span id="epoch">0</span>
             <hr>
-                score: <span id="score">0</span>
+            score: <span id="score">0</span>
             <hr>
-                generation: <span id="generation">1</span>
-            
-        
-            <h1>
-               learning-rate:<input type="number" id="learning-rate" value="0.1">
-            </h1>
-        </div>
+            best score: <span id="best-score">0</span>
+
+
+            <hr>
+            learning-rate:<input type="number" id="learning-rate" value="0.4">
+        </h1>
+    </div>
 
     <style>
         body {
@@ -37,12 +37,12 @@
 
         #stats {
 
-            float:inline-start;
+            float: inline-start;
         }
 
         #goofy-bird {
 
-  
+
 
             transform: scaleX(-1) rotate(180deg);
             filter: FlipH;

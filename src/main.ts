@@ -8,4 +8,4 @@ canvas.width = game.width
 canvas.height = game.height
 //requestAnimationFrame  (game.show.bind(game))
 setTimeout(() =>
-    setInterval(() => requestAnimationFrame(game.show.bind(game)), 300 / fps), 1000)
+    setInterval(() => requestAnimationFrame(game.show.bind(game)), 100 / fps), 1000)

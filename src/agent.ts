@@ -21,25 +21,32 @@ function shuffle(arr: memory[]): memory[] {
 // i couldnt finished this , so im going to be forced to make something else bruh 
 export class Agent {
     totalGames: number = 0
-    epsilon: number = 80
-    gamma: number = 0.9
+    epsilon: number =0
+    gamma: number = 0.8
     memory: memory[] = []
     model: Brain = new Brain([3, 4, 2], ["sigmoid", "sigmoid"])
     shortMemory: memory[] = []
-    score:number=0
+    score: number = 0
+    bestScore: number = 0
+    constructor() {
+
+//44
+this.model.weights=[[[-0.24770185414963364,0.6074550729596015,0.2521278272456858,-0.27600240376030016],[-0.0987527585872822,0.3002796339961309,-0.16726652444603748,-0.024159539556164004],[-0.31714281521611926,-0.05019345626373601,0.3226091116654749,0.2260169567478902]],[[-0.2672202221131191,-0.6646200086833131],[-0.8715925485068329,-0.5323856063221659],[-0.0386284679121189,-0.635066968881527],[-0.6530856625826373,-0.29463391066228817]]] 
+this.model.biases=[[0.19415896820606576,0.9265386530429618,0.3462182047832292,0.31320778236782765],[-0.8232808888743061,-0.714112610061257]]
+    }
     getState(g: Game): number[] {
         let distanceDownPlatform = (g.bird.y - g.obstacle.freeSpaceY) / g.height
         let distanceUpPlatform = ((g.obstacle.freeSpaceY + g.obstacle.freeSpaceHeight) - (g.bird.y + g.bird.height)) / g.height
         let distanceRight = (g.obstacle.x - (g.bird.x + g.bird.width)) / g.width
-    return [Math.abs((distanceDownPlatform)), Math.abs((distanceUpPlatform)), distanceRight]
+        return [((distanceDownPlatform)), ((distanceUpPlatform)), distanceRight]
     }
     remember() {
 
         this.memory.concat(this.shortMemory)
         this.memory = shuffle(this.shortMemory)
 
-        if (this.memory.length > 5000) {
-            this.memory = this.memory.slice(0, 4999)
+        if (this.memory.length > 50000) {
+            this.memory = this.memory.slice(0, 49990)
         }
     }
 
@@ -69,8 +76,8 @@ export class Agent {
     }
     longMemoryTrain(lr: number) {
         let minisample = shuffle(this.memory)
-        if(minisample.length>500){
-            minisample=minisample.slice(0,500)
+        if (minisample.length > 1000) {
+            minisample = minisample.slice(0, 100)
         }
 
         minisample.map((m) => this.backAndLoss(m)).map(i =>
@@ -95,9 +102,9 @@ export class Agent {
         g.obstacle.move()
         g.bird.move()
         let done = g.obstacle.collide(g.bird)
-        let s=(g.obstacle.givePoints(g.bird))
+        let s = (g.obstacle.givePoints(g.bird))
         let reward = done ? -1 : s
-        this.score+=s
+        this.score += s
 
         let nexState = this.getState(g)
         let m = {
@@ -109,23 +116,31 @@ export class Agent {
         }
 
         this.shortMemory.push(m)
-
+   
         if (reward != 0) {
             this.shortMemory.map((v, i) => (v.reward = reward * ((this.shortMemory.length - i) ** (-1))))
-            // this.shorMemoryTrain(0.01)
             this.remember()
             this.shortMemory = []
         }
-        document.getElementById("score")!.innerText=this.score+""
+        document.getElementById("score")!.innerText = this.score + ""
 
+        if (this.score > this.bestScore) {
+            this.bestScore = this.score
+            console.log("//"+this.score+"\n","this.model.weights=" + JSON.stringify(this.model.weights), "\n", "this.model.biases=" + JSON.stringify(this.model.biases))
+
+        }
         if (g.obstacle.collide(g.bird)) {
+       
             g.restart()
-            this.longMemoryTrain(Number((document.getElementById("learning-rate") as HTMLInputElement).value )||0.01)
+          
+            this.longMemoryTrain(Number((document.getElementById("learning-rate") as HTMLInputElement).value) || 0.4)
 
             this.totalGames++
             this.epsilon--
-            this.score=0
+
+            this.score = 0
             document.getElementById("epoch")!.innerText = this.totalGames + ""
+            document.getElementById("best-score")!.innerText = this.bestScore + ""
 
         }
     }
