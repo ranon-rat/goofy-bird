@@ -9,7 +9,15 @@ const sigmoid = (x: number): number =>
     1 / (1 + Math.exp(-x))
 
 const devSigmoid = (x: number): number => x * (1 - x)
-
+export function shuffle<T>(arr: T[]): T[] {
+    for (let i = 0; i < arr.length; i++) {
+        let index = Math.floor(Math.random() * arr.length)
+        let copy = arr[i]
+        arr[i] = arr[index]
+        arr[index] = copy
+    }
+    return arr
+}
 export const fps =30
 export function gaussianRand() {
     var rand = 0;

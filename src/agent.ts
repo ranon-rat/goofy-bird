@@ -1,6 +1,6 @@
 import { Brain } from "./brain.js"
 import { Game } from "./game.js"
-import { argmax, fps, gaussianRand } from "./mathfuncs.js"
+import { argmax, shuffle, gaussianRand } from "./mathfuncs.js"
 interface memory {
     state: number[];
     action: number
@@ -8,20 +8,12 @@ interface memory {
     nextState: number[]
     done: boolean
 }
-function shuffle(arr: memory[]): memory[] {
-    for (let i = 0; i < arr.length; i++) {
-        let index = Math.floor(Math.random() * arr.length)
-        let copy = arr[i]
-        arr[i] = arr[index]
-        arr[index] = copy
-    }
-    return arr
-}
+
 /// qnet network
 // i couldnt finished this , so im going to be forced to make something else bruh 
 export class Agent {
     totalGames: number = 0
-    epsilon: number =80
+    epsilon: number = 80
     gamma: number = 0.8
     memory: memory[] = []
     model: Brain = new Brain([3, 4, 2], ["sigmoid", "sigmoid"])
@@ -33,22 +25,18 @@ export class Agent {
         let distanceDownPlatform = (g.bird.y - g.obstacle.freeSpaceY) / g.height
         let distanceUpPlatform = ((g.obstacle.freeSpaceY + g.obstacle.freeSpaceHeight) - (g.bird.y + g.bird.height)) / g.height
         let distanceRight = (g.obstacle.x - (g.bird.x + g.bird.width)) / g.width
-        return [((distanceDownPlatform)), ((distanceUpPlatform)), distanceRight]
+        return [distanceDownPlatform, distanceUpPlatform, distanceRight]
     }
+   
     remember() {
 
         this.memory.concat(this.shortMemory)
-        this.memory = shuffle(this.shortMemory)
+        this.memory = shuffle(this.memory)
 
-        if (this.memory.length > 50000) {
-            this.memory = this.memory.slice(0, 49990)
+        if (this.memory.length > 5000) {
+            this.memory = this.memory.slice(0, 5000)
+
         }
-    }
-
-    trainStep(m: memory, lr: number) {
-        let [bd, wd] = this.backAndLoss(m)
-        this.model.update(lr / this.shortMemory.length, bd, wd)
-
     }
     backAndLoss(m: memory): [number[][], number[][][]] {
         let layers = this.model.foward(m.state)
@@ -66,25 +54,27 @@ export class Agent {
         )
         return this.model.backprop(layers, loss)
     }
-    shorMemoryTrain(lr: number) {
-        this.shortMemory.map(i => this.backAndLoss(i)).map(i => this.model.update(lr / this.shortMemory.length, i[0], i[1]))
+    shortMemoryTrain(lr:number){
+        let minisample = shuffle(this.shortMemory)
+  
+        minisample.map((m) => this.backAndLoss(m)).map(i =>
+
+            this.model.update(lr / minisample.length, i[0], i[1]))
     }
     longMemoryTrain(lr: number) {
         let minisample = shuffle(this.memory)
         if (minisample.length > 1000) {
-            minisample = minisample.slice(0, 100)
+            minisample = minisample.slice(0, 500)
         }
-
         minisample.map((m) => this.backAndLoss(m)).map(i =>
 
             this.model.update(lr / minisample.length, i[0], i[1]))
     }
     getAction(state: number[]) {
-        if (Math.random() * 100 < this.epsilon) {
+        if (Math.random() * 100 < this.epsilon-this.totalGames) {
             return Math.floor(gaussianRand() * 2)
         }
-        let pred = this.model.predict(state)
-        return argmax(pred)
+        return argmax(this.model.predict(state))
     }
     doSomething(g: Game) {
         let state = this.getState(g)
@@ -100,38 +90,41 @@ export class Agent {
         let s = (g.obstacle.givePoints(g.bird))
         let reward = done ? -1 : s
         this.score += s
+        document.getElementById("score")!.innerText = this.score + ""
 
         let nexState = this.getState(g)
-        let m = {
+
+
+        this.shortMemory.push({
             state: state,
             action: action,
             reward: reward,
             nextState: nexState,
             done: done
-        }
+        })
 
-        this.shortMemory.push(m)
-   
+        if (this.score > this.bestScore) {
+
+            this.bestScore = this.score
+            // this is for me lol
+            console.log("//" + this.score + "\n", "this.model.weights=" + JSON.stringify(this.model.weights), "\n", "this.model.biases=" + JSON.stringify(this.model.biases))
+
+        }
         if (reward != 0) {
+            // the action that you take in the begining isnt that important so this is really useful
             this.shortMemory.map((v, i) => (v.reward = reward * ((this.shortMemory.length - i) ** (-1))))
+            if(done)this.shortMemoryTrain(0.15)
             this.remember()
             this.shortMemory = []
         }
-        document.getElementById("score")!.innerText = this.score + ""
 
-        if (this.score > this.bestScore) {
-            this.bestScore = this.score
-            console.log("//"+this.score+"\n","this.model.weights=" + JSON.stringify(this.model.weights), "\n", "this.model.biases=" + JSON.stringify(this.model.biases))
 
-        }
         if (g.obstacle.collide(g.bird)) {
-       
-            g.restart()
-          
-            this.longMemoryTrain(0.1)
 
+            g.restart()
+            this.longMemoryTrain(0.01)
             this.totalGames++
-            this.epsilon--
+          //  this.epsilon--
 
             this.score = 0
             document.getElementById("epoch")!.innerText = this.totalGames + ""
