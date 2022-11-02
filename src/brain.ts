@@ -94,13 +94,6 @@ export class Brain {
 
         return [bd, wd]
     }
-    public mutate(bestBias: number[][], bestWeight: number[][][]) {
-        bestBias.map((v, l) => {
-            this.biases[l] = v.map(i => randomValue(i))
-            this.weights[l] = bestWeight[l].map((n) =>
-                n.map(randomValue))
-        })
-    }
     public update(learningRate: number, bgrad: number[][], wgrad: number[][][]) {
         bgrad.map((v, l) => {
             this.biases[l] = v.map((n, k) => this.biases[l][k] - learningRate * n)
@@ -110,13 +103,5 @@ export class Brain {
                 ))
         })
     }
-
-}
-function randomValue(x: number) {
-    if (Math.random() < 0.15) {
-        return Math.random()
-    }
-    return x + gaussianRand()
-
 
 }
